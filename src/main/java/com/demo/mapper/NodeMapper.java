@@ -46,7 +46,7 @@ public interface NodeMapper {
      * @return 返回数量
      */
     @Insert("insert into node values (null, #{count}, #{node_name}, #{node_desc},'使用中',0)")
-    int addNode(@Param("node_name") String node_name, @Param("node_desc") String node_desc, @Param("count") String count);
+    int addNode(@Param("node_name") String node_name, @Param("node_desc") String node_desc, @Param("count") int count);
 
     /**通过name和level模糊查询level
      * @param node_name 节点名字

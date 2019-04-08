@@ -52,7 +52,7 @@ public class NodeServiceImpl implements NodeService {
      */
     @Override
     public int addNode(String node_name, String node_desc) {
-        String count = this.nodeMapper.countByLevel();
+        int count = Integer.parseInt(this.nodeMapper.countByLevel());
         return this.nodeMapper.addNode(node_name, node_desc, count + 1);
     }
 
@@ -133,7 +133,6 @@ public class NodeServiceImpl implements NodeService {
     @Override
     public Integer insertChildNode(Integer node_id, String node_name, String node_desc) {
         List<String> levelList = nodeMapper.selectChildLevelsById(node_id);
-        System.out.println(levelList);
         int end;
         if (levelList.isEmpty()) {
             end = 1;
@@ -150,8 +149,8 @@ public class NodeServiceImpl implements NodeService {
         nodeMapper.insertChildNode(node_level, node_name, node_desc, node_id);
         List<Integer> list = nodeMapper.selectIdByName(node_name);
         if (list.size() > 1) {
-            for (Integer id : list) {
-                nodeMapper.deleteNodeById(id);
+            for (int i=1;i<list.size();i++) {
+                nodeMapper.deleteNodeById(list.get(i));
             }
             return -1;
         } else {
