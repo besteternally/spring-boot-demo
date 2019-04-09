@@ -37,7 +37,6 @@ public class NodeController {
 
     /**
      * 通过名称查询
-     *
      * @param name 节点的名称
      * @return 查询到的节点的列表
      */
@@ -64,7 +63,6 @@ public class NodeController {
 
     /**
      * 子界面通过id查询当前节点以及子节点
-     *
      * @param node_id 节点id
      * @return 返回查到的两层节点
      */
@@ -87,7 +85,6 @@ public class NodeController {
 
     /**
      * 通过名字模糊查询节点
-     *
      * @param node_name 节点名称
      * @param node_id   节点id
      * @return  返回查询到的节点数组
@@ -100,7 +97,6 @@ public class NodeController {
 
     /**
      * 增加节点
-     *
      * @param node_id   父节点的id
      * @param node_name 节点名称
      * @param node_desc 节点描述
@@ -120,7 +116,6 @@ public class NodeController {
 
     /**
      * 通过id来更新节点的名称和描述
-     *
      * @param node_name 节点名称
      * @param node_desc 节点描述
      * @param node_id   节点id

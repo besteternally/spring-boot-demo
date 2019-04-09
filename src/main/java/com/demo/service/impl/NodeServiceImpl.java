@@ -26,6 +26,7 @@ public class NodeServiceImpl implements NodeService {
 
     /**
      * 查询所有的根节点
+     *
      * @return 查询到的节点列表
      */
     @Override
@@ -35,6 +36,7 @@ public class NodeServiceImpl implements NodeService {
 
     /**
      * 用过名称查询所有的节点
+     *
      * @param name 名称
      * @return 查询到的节点列表
      */
@@ -46,19 +48,30 @@ public class NodeServiceImpl implements NodeService {
 
     /**
      * 增加节点
+     *
      * @param node_name 节点名称
      * @param node_desc 节点描述
      * @return 增加的结果
      */
     @Override
     public int addNode(String node_name, String node_desc) {
-        String count = this.nodeMapper.countByLevel();
-        return this.nodeMapper.addNode(node_name, node_desc, count + 1);
+        int count = Integer.parseInt(this.nodeMapper.countByLevel());
+        this.nodeMapper.addNode(node_name, node_desc, count + 1);
+        List<Integer> list = nodeMapper.selectIdByName(node_name);
+        if (list.size() > 1) {
+            for (int i = 1; i < list.size(); i++) {
+                nodeMapper.deleteNodeById(list.get(i));
+            }
+            return -1;
+        } else {
+            return list.get(0);
+        }
     }
 
 
     /**
      * 点击一次 查询一次该节点以及它的两层子节点
+     *
      * @param node_id 节点的id
      * @return 节点列表
      */
@@ -67,7 +80,7 @@ public class NodeServiceImpl implements NodeService {
         List<Node> childList = nodeMapper.selectChildNodesById(node_id);
         List<Node> grandsonList = new ArrayList<>();
         List<Node> result = new ArrayList<>();
-        for (Node child:childList) {
+        for (Node child : childList) {
             grandsonList.addAll(nodeMapper.selectChildNodesById(child.getNode_id()));
         }
         result.addAll(childList);
@@ -78,6 +91,7 @@ public class NodeServiceImpl implements NodeService {
 
     /**
      * 点击一次，查询一次该节点的两层子节点
+     *
      * @param node_id 节点的id
      * @return 查询到的两层子节点
      */
@@ -86,7 +100,7 @@ public class NodeServiceImpl implements NodeService {
         List<Node> childList = nodeMapper.selectChildNodesById(node_id);
         List<Node> grandsonList = new ArrayList<>();
         List<Node> result = new ArrayList<>();
-        for (Node child: childList) {
+        for (Node child : childList) {
             grandsonList.addAll(nodeMapper.selectChildNodesById(child.getNode_id()));
         }
         result.addAll(childList);
@@ -96,8 +110,9 @@ public class NodeServiceImpl implements NodeService {
 
     /**
      * 通过名称和个节点的id查询节点
+     *
      * @param node_name 查询的名称
-     * @param node_id 所在根节点的id
+     * @param node_id   所在根节点的id
      * @return 查询到的节点列表
      */
     @Override
@@ -108,8 +123,8 @@ public class NodeServiceImpl implements NodeService {
         levelList.addAll(nodeMapper.selectChildLevelsByName(node_name, node_level));
         Set<String> levelSet = new HashSet<>();
         List<Node> resultList = new ArrayList<>();
-        String separate=".";
-        for (String level: levelList) {
+        String separate = ".";
+        for (String level : levelList) {
             String str = level;
             levelSet.add(str);
             while (str.contains(separate)) {
@@ -125,21 +140,21 @@ public class NodeServiceImpl implements NodeService {
 
     /**
      * 插入子节点
-     * @param node_id 节点的id
+     *
+     * @param node_id   节点的id
      * @param node_name 节点的名称
      * @param node_desc 节点的描述
-     * @return  插入的结果
+     * @return 插入的结果
      */
     @Override
     public Integer insertChildNode(Integer node_id, String node_name, String node_desc) {
         List<String> levelList = nodeMapper.selectChildLevelsById(node_id);
-        System.out.println(levelList);
         int end;
         if (levelList.isEmpty()) {
             end = 1;
         } else {
             List<Integer> endList = new ArrayList<>();
-            for (String level: levelList) {
+            for (String level : levelList) {
                 endList.add(Integer.parseInt(level.substring(level.lastIndexOf(".") + 1)));
             }
             Collections.sort(endList);
@@ -150,8 +165,8 @@ public class NodeServiceImpl implements NodeService {
         nodeMapper.insertChildNode(node_level, node_name, node_desc, node_id);
         List<Integer> list = nodeMapper.selectIdByName(node_name);
         if (list.size() > 1) {
-            for (Integer id : list) {
-                nodeMapper.deleteNodeById(id);
+            for (int i = 1; i < list.size(); i++) {
+                nodeMapper.deleteNodeById(list.get(i));
             }
             return -1;
         } else {
@@ -161,9 +176,10 @@ public class NodeServiceImpl implements NodeService {
 
     /**
      * 更新节点
+     *
      * @param node_name 节点的名称
      * @param node_desc 节点的描述
-     * @param node_id 节点的id
+     * @param node_id   节点的id
      */
     @Override
     public void updateNodeById(String node_name, String node_desc, Integer node_id) {
@@ -172,12 +188,13 @@ public class NodeServiceImpl implements NodeService {
 
     /**
      * 删除节点
+     *
      * @param node_id 要删除的节点的id
      */
     @Override
     public void deleteNodeById(Integer node_id) {
         String node_level = nodeMapper.selectLevelById(node_id);
-        String regex="/^[0-9]+.*/";
+        String regex = "/^[0-9]+.*/";
         if (node_level.matches(regex)) {
             nodeMapper.deleteNodeById(node_id);
         } else {
