@@ -194,7 +194,7 @@ public class NodeServiceImpl implements NodeService {
     @Override
     public void deleteNodeById(Integer node_id) {
         String node_level = nodeMapper.selectLevelById(node_id);
-        String regex = "/^[0-9]+.*/";
+        String regex = "^[0-9]+\\..+";
         if (node_level.matches(regex)) {
             nodeMapper.deleteNodeById(node_id);
         } else {
@@ -202,6 +202,4 @@ public class NodeServiceImpl implements NodeService {
         }
 
     }
-
-
 }

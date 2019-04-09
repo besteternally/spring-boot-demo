@@ -53,12 +53,13 @@ public class NodeController {
      * @return 成功返回success，失败返回error
      */
     @PostMapping("/addNode")
-    public String addNode(String node_name, String node_desc) {
-        int ret = this.nodeService.addNode(node_name.trim(), node_desc.trim());
-        if (ret == 1) {
-            return "success";
+    public Integer addNode(String node_name, String node_desc) {
+        try {
+            return this.nodeService.addNode(node_name.trim(), node_desc.trim());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return -2;
         }
-        return "error";
     }
 
     /**
